@@ -40,7 +40,7 @@ X_train, X_test1, y_train, y_test1 = train_test_split(
 X_plot = np.arange(0.0, 5.0, 0.01)[:, np.newaxis]
 
 # --------------------------------------------------
-# Sidebar
+# Sidebar – Estimators
 # --------------------------------------------------
 st.sidebar.title("Voting Regressor")
 
@@ -61,7 +61,7 @@ if "Decision Tree Regressor" in estimators:
     algos.append(("Decision Tree", DecisionTreeRegressor(max_depth=5)))
 
 # --------------------------------------------------
-# Initial Plot
+# Plot (Initial)
 # --------------------------------------------------
 fig, ax = plt.subplots()
 ax.scatter(X, y, s=100, color="yellow", edgecolor="black", label="Data")
@@ -84,10 +84,20 @@ if st.sidebar.button("Run Algorithm"):
         y_vr = vr.predict(X_plot)
         ax.plot(X_plot, y_vr, linewidth=3, label="Voting Regressor")
 
-        # Individual Models
+        # Individual Models + Metrics
+        st.sidebar.subheader("📊 Regression Metrics")
+
+        st.sidebar.text(f"Voting Regressor R² : {round(vr_r2, 2)}")
+        st.sidebar.text(f"Voting Regressor MAE : {round(vr_mae, 2)}")
+
         for name, model in algos:
             model.fit(X_train, y_train)
+
             y_curve = model.predict(X_plot)
+            y_test_pred = model.predict(X_test1)
+
+            r2 = r2_score(y_test1, y_test_pred)
+            mae = mean_absolute_error(y_test1, y_test_pred)
 
             ax.plot(
                 X_plot,
@@ -96,6 +106,10 @@ if st.sidebar.button("Run Algorithm"):
                 linewidth=1,
                 label=name,
             )
+
+            st.sidebar.text("-" * 30)
+            st.sidebar.text(f"{name} R² : {round(r2, 2)}")
+            st.sidebar.text(f"{name} MAE : {round(mae, 2)}")
 
         ax.legend()
         plot_area.pyplot(fig)
