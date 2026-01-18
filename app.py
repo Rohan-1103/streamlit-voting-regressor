@@ -20,7 +20,7 @@ def train_voting_regressor(algos):
 
     return vr,r2,mae
 
-plt.style.use('seaborn-bright')
+plt.style.use('seaborn-v0_8-bright')
 
 # Create a random dataset
 rng = np.random.RandomState(1)
@@ -83,11 +83,13 @@ if st.sidebar.button("Run Algorithm"):
         ax.plot(X_test, y_pred, linewidth=1,label=i[0],linestyle='dashdot')
         ax.legend()
 
-    counter = 0
-    for i in st.beta_columns(len(algos)):
-        with i:
-            orig.pyplot(fig)
-        counter += 1
+    cols = st.columns(len(figs))
+
+    for idx, col in enumerate(cols):
+        with col:
+            st.pyplot(figs[idx])
+            st.text(idx)
+
 
     st.sidebar.subheader("Regression Metrics")
     st.sidebar.text("R2 score Voting Regressor " + str(round(r2,2)))
